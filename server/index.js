@@ -35,10 +35,15 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    mongoose.set('useCreateIndex', true); // Add this line
-    console.log('Database connected!');
+    const db = mongoose.connection;
+    db.once('open', async () => {
+      await User.createIndexes();
+      await Post.createIndexes();
+      console.log('Database connected!');
+    });
   })
   .catch((err) => console.log(err));
+
 
 
 app.post('/register', async (req, res) => {
